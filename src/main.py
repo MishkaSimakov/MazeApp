@@ -1,17 +1,25 @@
-import random
-
-from src.MazeFileManager import MazeFileManager
-from src.drawers.TextMazeDrawer import TextMazeDrawer, TextMazeDrawMode
-from src.generators.DFSGenerator import DFSGenerator
-from src.Maze import *
+import argparse
+from src.actions.GenerateAction import GenerateAction
+from src.actions.PrintAction import PrintAction
+from src.actions.SolveAction import SolveAction
 
 if __name__ == "__main__":
-    gen = DFSGenerator()
-    maze = gen.generate(MazeConfig(width=50, height=10))
+    parser = argparse.ArgumentParser(
+        prog='Maze Generator',
+        description='This program generates and manages mazes.'
+    )
 
-    path = "/Users/mihailsimakov/Documents/Programs/MazeGenerator/maze.maze"
-    MazeFileManager.write_into_file(path, maze)
-    read_maze = MazeFileManager.read_from_file(path)
+    subparsers = parser.add_subparsers(dest='action')
+    subparsers.required = True
 
-    drawer = TextMazeDrawer(draw_mode=TextMazeDrawMode.THIN)
-    print(*drawer.draw(read_maze), sep="\n")
+    actions = [GenerateAction, PrintAction, SolveAction]
+
+    for action in actions:
+        action.add_subparser(subparsers)
+
+    args = parser.parse_args()
+
+    for action in actions:
+        if action.name == args.action:
+            action.handle(args)
+            break

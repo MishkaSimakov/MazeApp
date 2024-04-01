@@ -50,7 +50,7 @@ class TextMazeDrawer:
 
         return self.__symbols[mask]
 
-    def draw_thin_maze(self, maze: Maze) -> list[str]:
+    def __draw_thin_maze(self, maze: Maze) -> list[str]:
         result = [""] * (maze.config.height + 1)
 
         for y in range(maze.config.height + 1):
@@ -59,7 +59,8 @@ class TextMazeDrawer:
 
         return result
 
-    def draw_thick_maze(self, maze: ThickMaze) -> list[str]:
+    @staticmethod
+    def __draw_thick_maze(maze: ThickMaze) -> list[str]:
         result = [""] * maze.config.height
 
         for y in range(maze.config.height):
@@ -70,6 +71,6 @@ class TextMazeDrawer:
 
     def draw(self, maze: Maze) -> list[str]:
         if self.draw_mode == TextMazeDrawMode.THIN:
-            return self.draw_thin_maze(maze)
+            return self.__draw_thin_maze(maze)
         else:
-            return self.draw_thick_maze(ThickMaze.from_thin_maze(maze))
+            return self.__draw_thick_maze(ThickMaze.from_thin_maze(maze))

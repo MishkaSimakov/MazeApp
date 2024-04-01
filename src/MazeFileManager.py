@@ -29,6 +29,7 @@ class MazeFileManager:
     @staticmethod
     def write_into_file(filename: str, maze: Maze) -> bool:
         try:
+            # TODO: store walls as bit array
             content = json.dumps({
                 "width": maze.config.width,
                 "height": maze.config.height,
