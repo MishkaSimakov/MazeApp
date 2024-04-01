@@ -1,4 +1,5 @@
 from enum import Enum
+from copy import copy
 
 
 class MazeConfig:
@@ -14,9 +15,22 @@ class MazePosition:
     x: int
     y: int
 
+    @staticmethod
+    def none():
+        return MazePosition(x=-1, y=-1)
+
     def __init__(self, x: int, y: int):
         self.x = x
         self.y = y
+
+    def __copy__(self):
+        return MazePosition(self.x, self.y)
+
+    def __hash__(self):
+        return hash((self.x, self.y))
+
+    def __eq__(self, other: 'MazePosition'):
+        return self.x == other.x and self.y == other.y
 
     def __add__(self, other: 'MazePosition') -> 'MazePosition':
         return MazePosition(self.x + other.x, self.y + other.y)
@@ -51,20 +65,25 @@ class Maze:
         return ((self.config.width - 1) * self.config.height
                 + self.config.width * (self.config.height - 1))
 
+    def get_cells_count(self):
+        return self.config.width * self.config.height
+
     def get_wall_index(self, cell: MazePosition, direction: Direction) -> int:
+        cell_copy = copy(cell)
+
         if direction == Direction.LEFT:
             direction = Direction.RIGHT
-            cell.x -= 1
+            cell_copy.x -= 1
 
         if direction == Direction.UP:
             direction = Direction.DOWN
-            cell.y -= 1
+            cell_copy.y -= 1
 
         if direction == Direction.RIGHT:
-            return cell.x + cell.y * (2 * self.config.width - 1)
+            return cell_copy.x + cell_copy.y * (2 * self.config.width - 1)
 
         # direction == Direction.DOWN
-        return self.config.width - 1 + cell.x + cell.y * (2 * self.config.width - 1)
+        return self.config.width - 1 + cell_copy.x + cell_copy.y * (2 * self.config.width - 1)
 
     def has_wall(self, cell: MazePosition, direction: Direction) -> bool:
         first_outside = not self.is_inside(cell)

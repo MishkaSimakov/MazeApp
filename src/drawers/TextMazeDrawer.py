@@ -1,3 +1,5 @@
+from typing import Optional
+
 from src.Maze import Maze, MazePosition, Direction, ThickMaze
 from enum import Enum
 
@@ -27,11 +29,6 @@ class TextMazeDrawer:
         "┼",  # 1111
     ]
 
-    draw_mode: TextMazeDrawMode
-
-    def __init__(self, draw_mode: TextMazeDrawMode):
-        self.draw_mode = draw_mode
-
     def __get_character_for_cell(self, maze: Maze, position: MazePosition) -> str:
         mask = 0
 
@@ -59,18 +56,34 @@ class TextMazeDrawer:
 
         return result
 
+    def draw(self, maze: Maze) -> list[str]:
+        return self.__draw_thin_maze(maze)
+
+
+class TextThickMazeDrawer:
     @staticmethod
-    def __draw_thick_maze(maze: ThickMaze) -> list[str]:
+    def __draw_thick_maze(maze: ThickMaze, solution: Optional[list[MazePosition]]) -> list[str]:
+        if solution is None:
+            solution = []
+
+        solution_set = set(solution)
         result = [""] * maze.config.height
 
         for y in range(maze.config.height):
             for x in range(maze.config.width):
-                result[y] += "█" if maze.maze[x][y] else " "
+                character = " "
+
+                if maze.maze[x][y]:
+                    character = "█"
+                elif MazePosition(x // 2, y // 2) in solution_set:
+                    character = "x"
+
+                result[y] += character
 
         return result
 
-    def draw(self, maze: Maze) -> list[str]:
-        if self.draw_mode == TextMazeDrawMode.THIN:
-            return self.__draw_thin_maze(maze)
-        else:
-            return self.__draw_thick_maze(ThickMaze.from_thin_maze(maze))
+    @staticmethod
+    def draw(maze: Maze, solution: list[MazePosition]):
+        thick_maze = ThickMaze.from_thin_maze(maze)
+
+        return TextThickMazeDrawer.__draw_thick_maze(thick_maze, solution)
