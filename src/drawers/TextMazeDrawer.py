@@ -47,7 +47,7 @@ class TextMazeDrawer:
 
         return self.__symbols[mask]
 
-    def __draw_thin_maze(self, maze: Maze) -> list[str]:
+    def draw(self, maze: Maze) -> list[str]:
         result = [""] * (maze.config.height + 1)
 
         for y in range(maze.config.height + 1):
@@ -55,9 +55,6 @@ class TextMazeDrawer:
                 result[y] += self.__get_character_for_cell(maze, MazePosition(x, y))
 
         return result
-
-    def draw(self, maze: Maze) -> list[str]:
-        return self.__draw_thin_maze(maze)
 
 
 class TextThickMazeDrawer:

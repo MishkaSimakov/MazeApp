@@ -6,7 +6,6 @@ from src.Maze import Maze, MazePosition, Direction
 class BFSMazeSolver:
     @staticmethod
     def calculate_prev_cells(maze: Maze, begin: MazePosition, end: MazePosition) -> Optional[list[MazePosition]]:
-
         stack = [begin]
         prev = [MazePosition.none()] * maze.get_cells_count()
         prev[0] = begin
