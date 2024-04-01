@@ -16,7 +16,7 @@
 
 ## Архитектура
 Предполагаемая архитектура проекта отображена в UML-диаграмме в папке `diagrams`.
-![UML-диаграмма классов](https://raw.githubusercontent.com/MishkaSimakov/MazeApp/documentation/diagrams/class_diagram.svg?token=GHSAT0AAAAAACLREX65OFQ5IPND5WIYDKGKZQKSHEA)
+![UML-диаграмма классов](https://github.com/MishkaSimakov/MazeApp/blob/640877eae41fc4bd33d92bb460bfa542a913b0a6/diagrams/class_diagram.svg)
 
 ## Библиотеки и стек технологий
 Пока что использование дополнительных библиотек не планируется. Однако если в проект будет добавлен
