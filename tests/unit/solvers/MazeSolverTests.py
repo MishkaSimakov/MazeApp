@@ -2,10 +2,10 @@ import unittest
 
 from src.Maze import MazeConfig, MazePosition, Direction
 from src.generators.DFSGenerator import DFSGenerator
-from src.solvers.BFSMazeSolver import BFSMazeSolver
+from src.solvers.BFSMazeSolver import BFSMazeSolver, UnsolvableMazeException
 
 
-class MazeSolverTest(unittest.TestCase):
+class MazeSolverTests(unittest.TestCase):
     def setUp(self):
         self.config = MazeConfig(10, 15)
 
@@ -37,3 +37,13 @@ class MazeSolverTest(unittest.TestCase):
                     self.fail("Path visit same cell twice.")
 
                 visited.add(cell)
+
+    def test_it_raise_exception_when_maze_is_unsolvable(self):
+        unsolvable = DFSGenerator().generate(self.config)
+        corner = MazePosition(self.config.width - 1, self.config.height - 1)
+
+        unsolvable.walls[unsolvable.get_wall_index(corner, Direction.LEFT)] = True
+        unsolvable.walls[unsolvable.get_wall_index(corner, Direction.UP)] = True
+
+        with self.assertRaises(UnsolvableMazeException):
+            BFSMazeSolver.solve(unsolvable)

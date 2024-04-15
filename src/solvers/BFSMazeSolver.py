@@ -3,16 +3,23 @@ from typing import Optional
 from src.Maze import Maze, MazePosition, Direction
 
 
+class UnsolvableMazeException(Exception):
+    """Exception raised when you try to solve a maze that has no solution."""
+
+    def __init__(self):
+        super().__init__("Maze has no solution.")
+
+
 class BFSMazeSolver:
     """
     Use BFS algorithm to find solution for any maze.
-    BFS - breadth-first search - visit each neighbour and only then go deeper.
+    BFS - breadth-first search - visit each neighbor and only then go deeper.
     """
 
     @staticmethod
     def calculate_prev_cells(maze: Maze, begin: MazePosition, end: MazePosition) -> Optional[list[MazePosition]]:
         """
-        This method go through all maze using BFS
+        This method go through all cells in maze using BFS
         and for each cell store position from which it gets to this cell.
         """
 
@@ -46,6 +53,9 @@ class BFSMazeSolver:
 
             stack = new_stack
 
+            if len(stack) == 0:
+                break
+
         return None
 
     @staticmethod
@@ -62,7 +72,7 @@ class BFSMazeSolver:
         prev = BFSMazeSolver.calculate_prev_cells(maze, path_begin, path_end)
 
         if prev is None:
-            return None
+            raise UnsolvableMazeException()
 
         result = []
         current = path_end
