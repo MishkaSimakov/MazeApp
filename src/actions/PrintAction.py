@@ -22,4 +22,4 @@ class PrintAction(Action):
             print("Error occurred while reading file.")
             return
 
-        print(*TextMazeDrawer(draw_mode=TextMazeDrawMode.THIN).draw(maze), sep="\n")
+        print(*TextMazeDrawer().draw(maze), sep="\n")

@@ -1,6 +1,8 @@
 from typing import Optional
+from colorama import Fore, Back, Style
+from colorama.ansi import AnsiFore
 
-from src.Maze import Maze, MazePosition, Direction, ThickMaze
+from src.Maze import Maze, MazePosition, Direction, ThickMaze, ThickMazeCellType
 from enum import Enum
 
 
@@ -11,7 +13,7 @@ class TextMazeDrawMode(Enum):
 
 class TextMazeDrawer:
     __symbols: list[str] = [
-        "x",  # 0000
+        " ",  # 0000
         "╵",  # 0001
         "╶",  # 0010
         "└",  # 0011
@@ -29,7 +31,8 @@ class TextMazeDrawer:
         "┼",  # 1111
     ]
 
-    def __get_character_for_cell(self, maze: Maze, position: MazePosition) -> str:
+    @staticmethod
+    def __get_mask_for_cell(maze: Maze, position: MazePosition) -> int:
         mask = 0
 
         offsets_and_directions = [
@@ -45,14 +48,72 @@ class TextMazeDrawer:
 
             mask += 1 << index
 
-        return self.__symbols[mask]
+        return mask
 
-    def draw(self, maze: Maze) -> list[str]:
-        result = [""] * (maze.config.height + 1)
+    def __get_solution_path(self, solution: Optional[list[MazePosition]]) -> dict[MazePosition, str]:
+        result = dict()
 
-        for y in range(maze.config.height + 1):
-            for x in range(maze.config.width + 1):
-                result[y] += self.__get_character_for_cell(maze, MazePosition(x, y))
+        for index in range(len(solution)):
+            position = solution[index] * 2 + MazePosition(1, 1)
+
+            if index != len(solution) - 1:
+                intermediate_position = solution[index + 1] + solution[index] + MazePosition(1, 1)
+                offset = position - intermediate_position
+
+                if offset == Direction.UP.value or offset == Direction.DOWN.value:
+                    symbol_code = 1 << 0 | 1 << 2
+                else:
+                    symbol_code = 1 << 1 | 1 << 3
+                result[intermediate_position] = Fore.CYAN + self.__symbols[symbol_code] + Style.RESET_ALL
+
+            if index == 0 or index == len(solution) - 1:
+                result[position] = Fore.CYAN + "⚑" + Style.RESET_ALL
+                continue
+
+            prev_offset = 1 << Direction.index_by_value(solution[index - 1] - solution[index])
+            next_offset = 1 << Direction.index_by_value(solution[index + 1] - solution[index])
+            offset = prev_offset | next_offset
+
+            result[position] = Fore.CYAN + self.__symbols[offset] + Style.RESET_ALL
+
+        return result
+
+    def draw(self, maze: Maze, solution: Optional[list[MazePosition]] = None) -> list[str]:
+        if solution is None:
+            solution = []
+
+        spacing = 2 if len(solution) != 0 else 1
+
+        result_width = maze.config.width * spacing
+        result_height = maze.config.height * spacing
+
+        result = [""] * (result_height + 1)
+
+        solution_path = self.__get_solution_path(solution)
+
+        for y in range(result_height + 1):
+            for x in range(result_width + 1):
+                position = MazePosition(x // spacing, y // spacing)
+
+                if x % spacing == 0 and y % spacing == 0:
+                    mask = self.__get_mask_for_cell(maze, position)
+                    result[y] += self.__symbols[mask]
+                    continue
+
+                if MazePosition(x, y) in solution_path:
+                    result[y] += solution_path[MazePosition(x, y)]
+                    continue
+
+                if x % spacing == 0:
+                    top_mask = self.__get_mask_for_cell(maze, position) & (1 << 2)
+                    bottom_mask = self.__get_mask_for_cell(maze, position.bottom()) & 1
+                    result[y] += self.__symbols[top_mask + bottom_mask]
+                elif y % spacing == 0:
+                    left_mask = self.__get_mask_for_cell(maze, position) & (1 << 1)
+                    right_mask = self.__get_mask_for_cell(maze, position.right()) & (1 << 3)
+                    result[y] += self.__symbols[left_mask + right_mask]
+                else:
+                    result[y] += " "
 
         return result
 
@@ -63,16 +124,25 @@ class TextThickMazeDrawer:
         if solution is None:
             solution = []
 
-        solution_set = set(solution)
+        for index in range(len(solution)):
+            current_position = solution[index] * 2 + MazePosition(1, 1)
+            maze.maze[current_position.x][current_position.y] = ThickMazeCellType.PATH
+
+            if index == len(solution) - 1:
+                continue
+
+            intermediate_position = solution[index + 1] + solution[index] + MazePosition(1, 1)
+            maze.maze[intermediate_position.x][intermediate_position.y] = ThickMazeCellType.PATH
+
         result = [""] * maze.config.height
 
         for y in range(maze.config.height):
             for x in range(maze.config.width):
                 character = " "
 
-                if maze.maze[x][y]:
+                if maze.maze[x][y] == ThickMazeCellType.WALL:
                     character = "█"
-                elif MazePosition(x // 2, y // 2) in solution_set:
+                elif maze.maze[x][y] == ThickMazeCellType.PATH:
                     character = "x"
 
                 result[y] += character

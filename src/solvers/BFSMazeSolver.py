@@ -56,10 +56,3 @@ class BFSMazeSolver:
         result.append(path_begin)
 
         return result
-
-# ┌───┬┐
-# ├┬─╴││
-# │╵┌─┘│
-# │╶┴╴┌┤
-# ├╴╷╶┘│
-# └─┴──┘

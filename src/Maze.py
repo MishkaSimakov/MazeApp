@@ -41,12 +41,38 @@ class MazePosition:
     def __repr__(self) -> str:
         return f"MazePosition(x={self.x}, y={self.y})"
 
+    def __mul__(self, scalar: int):
+        return MazePosition(self.x * scalar, self.y * scalar)
+
+    def left(self) -> 'MazePosition':
+        return self + MazePosition(-1, 0)
+
+    def right(self) -> 'MazePosition':
+        return self + MazePosition(1, 0)
+
+    def top(self) -> 'MazePosition':
+        return self + MazePosition(0, -1)
+
+    def bottom(self) -> 'MazePosition':
+        return self + MazePosition(0, 1)
+
 
 class Direction(Enum):
     UP = MazePosition(0, -1)
     RIGHT = MazePosition(1, 0)
     DOWN = MazePosition(0, 1)
     LEFT = MazePosition(-1, 0)
+
+    @staticmethod
+    def index_by_value(value: MazePosition):
+        if value.y == -1:
+            return 0
+        elif value.x == 1:
+            return 1
+        elif value.y == 1:
+            return 2
+        else:
+            return 3
 
 
 class Maze:
@@ -100,14 +126,20 @@ class Maze:
         return 0 <= position.x < self.config.width and 0 <= position.y < self.config.height
 
 
+class ThickMazeCellType(Enum):
+    EMPTY = 0
+    WALL = 1
+    PATH = 2
+
+
 class ThickMaze:
-    maze: list[list[bool]]
+    maze: list[list[ThickMazeCellType]]
     config: MazeConfig
 
     def __init__(self, config: MazeConfig):
         self.config = config
 
-        self.maze = [[False] * config.height for _ in range(config.width)]
+        self.maze = [[ThickMazeCellType.EMPTY] * config.height for _ in range(config.width)]
 
     @staticmethod
     def from_thin_maze(thin_maze: Maze):
@@ -118,11 +150,16 @@ class ThickMaze:
 
         for x in range(width):
             for y in range(height):
+                has_wall = False
+
                 if x % 2 == y % 2:
-                    thick_maze.maze[x][y] = x % 2 == 0
+                    has_wall = x % 2 == 0
                 elif x % 2 == 0:
-                    thick_maze.maze[x][y] = thin_maze.has_wall(MazePosition(x // 2 - 1, y // 2), Direction.RIGHT)
+                    has_wall = thin_maze.has_wall(MazePosition(x // 2 - 1, y // 2), Direction.RIGHT)
                 elif y % 2 == 0:
-                    thick_maze.maze[x][y] = thin_maze.has_wall(MazePosition(x // 2, y // 2 - 1), Direction.DOWN)
+                    has_wall = thin_maze.has_wall(MazePosition(x // 2, y // 2 - 1), Direction.DOWN)
+
+                if has_wall:
+                    thick_maze.maze[x][y] = ThickMazeCellType.WALL
 
         return thick_maze

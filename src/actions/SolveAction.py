@@ -24,4 +24,4 @@ class SolveAction(Action):
             return
 
         solution = BFSMazeSolver.solve(maze)
-        print(*TextThickMazeDrawer.draw(maze, solution), sep="\n")
+        print(*TextMazeDrawer().draw(maze, solution), sep="\n")
