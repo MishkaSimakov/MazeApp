@@ -5,8 +5,14 @@ from typing import Optional
 
 
 class MazeFileManager:
+    """
+    Read and save maze into file.
+    """
+
     @staticmethod
     def read_from_file(filename: str) -> Optional[Maze]:
+        """Read maze from file. Exception is thrown if file content is invalid."""
+
         try:
             with open(filename) as file:
                 content = json.loads(file.readline())
@@ -28,8 +34,9 @@ class MazeFileManager:
 
     @staticmethod
     def write_into_file(filename: str, maze: Maze) -> bool:
+        """Write maze into file using json format."""
+
         try:
-            # TODO: store walls as bit array
             content = json.dumps({
                 "width": maze.config.width,
                 "height": maze.config.height,

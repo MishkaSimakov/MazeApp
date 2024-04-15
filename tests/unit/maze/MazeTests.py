@@ -1,5 +1,4 @@
 import unittest
-from copy import copy
 
 from src.Maze import MazeConfig, Maze, MazePosition, Direction
 

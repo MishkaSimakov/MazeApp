@@ -3,16 +3,23 @@ from argparse import Namespace
 from src.Maze import MazeConfig
 from src.MazeFileManager import MazeFileManager
 from src.actions.Action import Action
-from src.drawers.TextMazeDrawer import TextMazeDrawer, TextMazeDrawMode
+from src.drawers.TextMazeDrawer import TextMazeDrawer
 from src.generators.DFSGenerator import DFSGenerator
+from src.generators.MazeGenerator import MazeGenerator
 from src.generators.SpanningTreeGenerator import SpanningTreeGenerator
 
 
 class GenerateAction(Action):
+    """
+    Generates maze with given configuration using given generation method.
+    Dictionary `generators` represents available generation methods.
+    Generated maze then stored into file or just printed into console.
+    """
+
     name = "generate"
     help = "Generate maze and store it into file."
 
-    generators = {
+    generators: dict[str, MazeGenerator] = {
         "dfs": DFSGenerator(),
         "tree": SpanningTreeGenerator()
     }

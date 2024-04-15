@@ -5,6 +5,12 @@ from src.generators.MazeGenerator import MazeGenerator
 
 
 class DFSGenerator(MazeGenerator):
+    """
+    Maze Generator that uses DFS algorithm to generate maze.
+    DFS - depth-first search - means that algorithm go in random direction as far as it can
+    and only when no directions are available go back.
+    """
+
     def generate(self, config: MazeConfig) -> Maze:
         maze = Maze(config)
         used = [[False] * config.height for _ in range(config.width)]

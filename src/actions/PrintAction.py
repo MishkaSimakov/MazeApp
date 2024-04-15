@@ -2,10 +2,14 @@ from argparse import Namespace
 
 from src.MazeFileManager import MazeFileManager
 from src.actions.Action import Action
-from src.drawers.TextMazeDrawer import TextMazeDrawer, TextMazeDrawMode
+from src.drawers.TextMazeDrawer import TextMazeDrawer
 
 
 class PrintAction(Action):
+    """
+    Read maze from given file and then print it into console.
+    """
+
     name = "print"
     help = "Prints maze stored in file."
 

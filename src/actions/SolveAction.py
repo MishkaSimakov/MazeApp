@@ -7,8 +7,13 @@ from src.solvers.BFSMazeSolver import BFSMazeSolver
 
 
 class SolveAction(Action):
+    """
+    Read maze from given file and then solve it.
+    Solution is then printed into console.
+    """
+
     name = "solve"
-    help = "Solve maze."
+    help = "Solve maze and print solution into console."
 
     @staticmethod
     def add_subparser(parser):

@@ -1,17 +1,15 @@
 from typing import Optional
-from colorama import Fore, Back, Style
-from colorama.ansi import AnsiFore
+from colorama import Fore, Style
 
 from src.Maze import Maze, MazePosition, Direction, ThickMaze, ThickMazeCellType
-from enum import Enum
-
-
-class TextMazeDrawMode(Enum):
-    THIN = 0
-    THICK = 1
 
 
 class TextMazeDrawer:
+    """
+    Use special symbols to print thin maze into console.
+    This class also support path drawing. Colorama library is used for colored output.
+    """
+
     __symbols: list[str] = [
         " ",  # 0000
         "╵",  # 0001
@@ -33,6 +31,11 @@ class TextMazeDrawer:
 
     @staticmethod
     def __get_mask_for_cell(maze: Maze, position: MazePosition) -> int:
+        """
+        Special symbols are used for walls. Each special symbol has some connection:
+        top, right, bottom or left. This method calculate connections required for wall
+        in given point (according to its neighbours) and return symbol index for this wall.
+        """
         mask = 0
 
         offsets_and_directions = [
@@ -51,6 +54,11 @@ class TextMazeDrawer:
         return mask
 
     def __get_solution_path(self, solution: Optional[list[MazePosition]]) -> dict[MazePosition, str]:
+        """
+        Special symbols are used for solution path drawing.
+        This method take solution and return dict that contain appropriate
+        special symbol for each cell on solution path.
+        """
         result = dict()
 
         for index in range(len(solution)):
@@ -79,6 +87,8 @@ class TextMazeDrawer:
         return result
 
     def draw(self, maze: Maze, solution: Optional[list[MazePosition]] = None) -> list[str]:
+        """Return text representation of given maze and (optionally) its solution."""
+
         if solution is None:
             solution = []
 
@@ -119,38 +129,38 @@ class TextMazeDrawer:
 
 
 class TextThickMazeDrawer:
-    @staticmethod
-    def __draw_thick_maze(maze: ThickMaze, solution: Optional[list[MazePosition]]) -> list[str]:
-        if solution is None:
-            solution = []
-
-        for index in range(len(solution)):
-            current_position = solution[index] * 2 + MazePosition(1, 1)
-            maze.maze[current_position.x][current_position.y] = ThickMazeCellType.PATH
-
-            if index == len(solution) - 1:
-                continue
-
-            intermediate_position = solution[index + 1] + solution[index] + MazePosition(1, 1)
-            maze.maze[intermediate_position.x][intermediate_position.y] = ThickMazeCellType.PATH
-
-        result = [""] * maze.config.height
-
-        for y in range(maze.config.height):
-            for x in range(maze.config.width):
-                character = " "
-
-                if maze.maze[x][y] == ThickMazeCellType.WALL:
-                    character = "█"
-                elif maze.maze[x][y] == ThickMazeCellType.PATH:
-                    character = "x"
-
-                result[y] += character
-
-        return result
+    """
+    Print thick maze into console. Walls and empty cells has equal size in this type of maze.
+    """
 
     @staticmethod
     def draw(maze: Maze, solution: list[MazePosition]):
         thick_maze = ThickMaze.from_thin_maze(maze)
 
-        return TextThickMazeDrawer.__draw_thick_maze(thick_maze, solution)
+        if solution is None:
+            solution = []
+
+        for index in range(len(solution)):
+            current_position = solution[index] * 2 + MazePosition(1, 1)
+            thick_maze.maze[current_position.x][current_position.y] = ThickMazeCellType.PATH
+
+            if index == len(solution) - 1:
+                continue
+
+            intermediate_position = solution[index + 1] + solution[index] + MazePosition(1, 1)
+            thick_maze.maze[intermediate_position.x][intermediate_position.y] = ThickMazeCellType.PATH
+
+        result = [""] * thick_maze.config.height
+
+        for y in range(thick_maze.config.height):
+            for x in range(thick_maze.config.width):
+                character = " "
+
+                if thick_maze.maze[x][y] == ThickMazeCellType.WALL:
+                    character = "█"
+                elif thick_maze.maze[x][y] == ThickMazeCellType.PATH:
+                    character = "x"
+
+                result[y] += character
+
+        return result
