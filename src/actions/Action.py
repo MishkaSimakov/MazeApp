@@ -5,7 +5,7 @@ from argparse import Namespace
 class Action(ABC):
     """
     This abstract class represents action that program can do.
-    Command line are used to call this actions. Fields `name` and `help`
+    Command line is used to call this actions. Fields `name` and `help`
     are used by argparse module to give additional information about each action.
     """
 
@@ -16,8 +16,8 @@ class Action(ABC):
     @abstractmethod
     def add_subparser(parser):
         """
-        Adds subparser for main argparse module parser.
-        Subparser handle arguments for this action.
+        Adds subparser for the main argparse module parser.
+        Subparser handles arguments for this action.
         """
         pass
 

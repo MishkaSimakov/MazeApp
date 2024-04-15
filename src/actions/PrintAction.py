@@ -7,7 +7,7 @@ from src.drawers.TextMazeDrawer import TextMazeDrawer
 
 class PrintAction(Action):
     """
-    Read maze from given file and then print it into console.
+    Read maze from given file and then print it into the console.
     """
 
     name = "print"

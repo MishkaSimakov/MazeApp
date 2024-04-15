@@ -7,8 +7,8 @@ from src.generators.MazeGenerator import MazeGenerator
 class DFSGenerator(MazeGenerator):
     """
     Maze Generator that uses DFS algorithm to generate maze.
-    DFS - depth-first search - means that algorithm go in random direction as far as it can
-    and only when no directions are available go back.
+    DFS - depth-first search - means that algorithm goes in random direction as far as it can
+    and only when no directions are available goes back.
     """
 
     def generate(self, config: MazeConfig) -> Maze:

@@ -4,6 +4,13 @@ from src.Maze import Maze, MazeConfig
 from typing import Optional
 
 
+class MazeFileInvalidException(Exception):
+    """Exception raised when you try to read maze from invalid maze file"""
+
+    def __init__(self):
+        super().__init__("Provided maze file is invalid.")
+
+
 class MazeFileManager:
     """
     Read and save maze into file.
@@ -13,24 +20,20 @@ class MazeFileManager:
     def read_from_file(filename: str) -> Optional[Maze]:
         """Read maze from file. Exception is thrown if file content is invalid."""
 
-        try:
-            with open(filename) as file:
-                content = json.loads(file.readline())
+        with open(filename) as file:
+            content = json.loads(file.readline())
 
-                width = content["width"]
-                height = content["height"]
-                maze_walls = content["walls"]
+            width = content["width"]
+            height = content["height"]
+            maze_walls = content["walls"]
 
-            maze = Maze(MazeConfig(width, height))
-            maze.walls = maze_walls
+        maze = Maze(MazeConfig(width, height))
+        maze.walls = maze_walls
 
-            if not maze.is_correct():
-                raise Exception("Invalid maze file.")
+        if not maze.is_correct():
+            raise MazeFileInvalidException()
 
-            return maze
-        except Exception as e:
-            print(e)
-            return None
+        return maze
 
     @staticmethod
     def write_into_file(filename: str, maze: Maze) -> bool:

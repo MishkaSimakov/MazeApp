@@ -1,4 +1,5 @@
 import unittest
+import copy
 
 from src.Maze import MazeConfig, Maze, MazePosition, Direction
 
@@ -60,3 +61,12 @@ class MazeTests(unittest.TestCase):
         self.assertFalse(self.maze.is_inside(MazePosition(10, 5)))
         self.assertFalse(self.maze.is_inside(MazePosition(0, 15)))
         self.assertFalse(self.maze.is_inside(MazePosition(-1, 15)))
+
+    def test_it_compare_mazes_for_equality(self):
+        maze_copy = copy.deepcopy(self.maze)
+
+        self.assertEqual(maze_copy, self.maze)
+
+        maze_copy.walls[0] = not maze_copy.walls[0]
+
+        self.assertNotEqual(maze_copy, self.maze)

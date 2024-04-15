@@ -7,7 +7,8 @@ from src.Maze import Maze, MazePosition, Direction, ThickMaze, ThickMazeCellType
 class TextMazeDrawer:
     """
     Use special symbols to print thin maze into console.
-    This class also support path drawing. Colorama library is used for colored output.
+    This class also supports path drawing.
+    Colorama library is used for colored output.
     """
 
     __symbols: list[str] = [
@@ -33,8 +34,8 @@ class TextMazeDrawer:
     def __get_mask_for_cell(maze: Maze, position: MazePosition) -> int:
         """
         Special symbols are used for walls. Each special symbol has some connection:
-        top, right, bottom or left. This method calculate connections required for wall
-        in given point (according to its neighbours) and return symbol index for this wall.
+        top, right, bottom or left. This method calculates connections required for wall
+        in given point (according to its neighbors) and return symbol index for this wall.
         """
         mask = 0
 
@@ -57,7 +58,7 @@ class TextMazeDrawer:
         """
         Special symbols are used for solution path drawing.
         This method take solution and return dict that contain appropriate
-        special symbol for each cell on solution path.
+        special symbol for each cell on the solution path.
         """
         result = dict()
 
@@ -130,7 +131,7 @@ class TextMazeDrawer:
 
 class TextThickMazeDrawer:
     """
-    Print thick maze into console. Walls and empty cells has equal size in this type of maze.
+    Print thick maze into console. Walls and empty cells have equal size in this type of maze.
     """
 
     @staticmethod

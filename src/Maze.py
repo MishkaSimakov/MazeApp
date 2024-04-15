@@ -26,7 +26,7 @@ class MazePosition:
     def none() -> 'MazePosition':
         """
         Returns MazePosition that represents absence of position.
-        (such position must not appear as valid position in maze)
+        (such position must not appear as a valid position in maze)
         """
         return MazePosition(x=-1, y=-1)
 
@@ -56,25 +56,25 @@ class MazePosition:
         return MazePosition(self.x * scalar, self.y * scalar)
 
     def left(self) -> 'MazePosition':
-        """Returns left neighbour of current position"""
+        """Returns left neighbor of current position"""
         return self + MazePosition(-1, 0)
 
     def right(self) -> 'MazePosition':
-        """Returns right neighbour of current position"""
+        """Returns right neighbor of current position"""
         return self + MazePosition(1, 0)
 
     def top(self) -> 'MazePosition':
-        """Returns top neighbour of current position"""
+        """Returns top neighbor of current position"""
         return self + MazePosition(0, -1)
 
     def bottom(self) -> 'MazePosition':
-        """Returns bottom neighbour of current position"""
+        """Returns bottom neighbor of current position"""
         return self + MazePosition(0, 1)
 
 
 class Direction(Enum):
     """
-    Represents 4 main directions in 2-D plane.
+    Represents four main directions in 2-D plane.
     Directions are strongly connected to MazePosition class.
     Value of each direction is MazePosition such that addition of this position
     will move you into this direction.
@@ -100,7 +100,7 @@ class Direction(Enum):
 
 class Maze:
     """
-    Represents thin maze. 'Thin' means that walls located between cells.
+    Represents a thin maze. 'Thin' means that walls located between cells.
     """
 
     # walls between cells
@@ -155,8 +155,15 @@ class Maze:
         return self.walls[self.get_wall_index(cell, direction)]
 
     def is_inside(self, position: MazePosition) -> bool:
-        """Checks if given MazePosition is located inside maze."""
+        """Check if given MazePosition is located inside maze."""
         return 0 <= position.x < self.config.width and 0 <= position.y < self.config.height
+
+    def __eq__(self, other: 'Maze') -> bool:
+        """Compare two mazes for equality."""
+        if self.config.width != other.config.width or self.config.height != other.config.height:
+            return False
+
+        return self.walls == other.walls
 
 
 class ThickMazeCellType(Enum):
@@ -169,8 +176,8 @@ class ThickMazeCellType(Enum):
 class ThickMaze:
     """
     Represents thick maze. 'Thick' means that walls are also represented by cells.
-    ThickMazeCellType exist for storing type of cell. It can be empty or wall might be in it.
-    Also, there is PATH maze cell type which is only used for solution drawing in this type of maze.
+    ThickMazeCellType exists for storing type of cell. It can be empty or wall might be in it.
+    Also, there is a PATH maze cell type that is only used for solution drawing in this type of maze.
     """
     maze: list[list[ThickMazeCellType]]
     config: MazeConfig

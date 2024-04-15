@@ -4,8 +4,18 @@ from src.Maze import Maze, MazePosition, Direction
 
 
 class BFSMazeSolver:
+    """
+    Use BFS algorithm to find solution for any maze.
+    BFS - breadth-first search - visit each neighbour and only then go deeper.
+    """
+
     @staticmethod
     def calculate_prev_cells(maze: Maze, begin: MazePosition, end: MazePosition) -> Optional[list[MazePosition]]:
+        """
+        This method go through all maze using BFS
+        and for each cell store position from which it gets to this cell.
+        """
+
         stack = [begin]
         prev = [MazePosition.none()] * maze.get_cells_count()
         prev[0] = begin
@@ -40,6 +50,13 @@ class BFSMazeSolver:
 
     @staticmethod
     def solve(maze: Maze) -> Optional[list[MazePosition]]:
+        """
+        This method solves maze.
+        It uses `calculate_prev_cells` method that calculates BFS path in maze,
+        and then using this information build a path from start to end.
+        By default, start is (0, 0), end is (width - 1, height - 1)
+        """
+
         path_begin = MazePosition(0, 0)
         path_end = MazePosition(maze.config.width - 1, maze.config.height - 1)
         prev = BFSMazeSolver.calculate_prev_cells(maze, path_begin, path_end)

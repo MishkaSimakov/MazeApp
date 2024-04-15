@@ -7,7 +7,7 @@ from src.generators.MazeGenerator import MazeGenerator
 class SpanningTreeGenerator(MazeGenerator):
     """
     Maze Generator that uses something like Spanning Tree search algorithm to generate maze.
-    This algorithm in each step visit one cell that is adjacent to already visited ones.
+    This algorithm in each step visits one cell that is adjacent to already visited ones.
     """
 
     def generate(self, config: MazeConfig) -> Maze:
