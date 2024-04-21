@@ -11,8 +11,8 @@ class MazePositionTests(unittest.TestCase):
 
         position_copy.x = 10
 
-        self.assertEquals(position_copy.x, 10)
-        self.assertEquals(position.x, 0)
+        self.assertEqual(position_copy.x, 10)
+        self.assertEqual(position.x, 0)
 
     def test_position_is_hashable(self):
         position = MazePosition(0, 0)
@@ -32,13 +32,13 @@ class MazePositionTests(unittest.TestCase):
         position = MazePosition(0, 0)
 
         position += MazePosition(10, 20)
-        self.assertEquals(position, MazePosition(10, 20))
+        self.assertEqual(position, MazePosition(10, 20))
 
         position *= 2
-        self.assertEquals(position, MazePosition(20, 40))
+        self.assertEqual(position, MazePosition(20, 40))
 
         position -= MazePosition(30, 40)
-        self.assertEquals(position, MazePosition(-10, 0))
+        self.assertEqual(position, MazePosition(-10, 0))
 
     def test_position_return_neighbours_correctly(self):
         position = MazePosition(0, 0)

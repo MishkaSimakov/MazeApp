@@ -4,3 +4,5 @@
 **/__pycache__
 **/*.maze
 !tests/files/*.maze
+.coverage
+htmlcov

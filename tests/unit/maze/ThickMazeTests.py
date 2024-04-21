@@ -11,8 +11,8 @@ class ThickMazeTests(unittest.TestCase):
 
     def test_it_copy_config(self):
         # thick maze doubles thin maze size
-        self.assertEquals(self.thick_maze.config.width, self.maze.config.width * 2 + 1)
-        self.assertEquals(self.thick_maze.config.height, self.maze.config.height * 2 + 1)
+        self.assertEqual(self.thick_maze.config.width, self.maze.config.width * 2 + 1)
+        self.assertEqual(self.thick_maze.config.height, self.maze.config.height * 2 + 1)
 
     def test_it_copy_walls_layout(self):
         self.assertEqual(self.thick_maze.maze[1][2], ThickMazeCellType.WALL)
